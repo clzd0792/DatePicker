@@ -1,6 +1,7 @@
 package cn.aigestudio.datepicker.bizs.calendars;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -188,16 +189,36 @@ public final class DPCManager {
         for (int i = 0; i < info.length; i++) {
             for (int j = 0; j < info[i].length; j++) {
                 DPInfo tmp = new DPInfo();
-                tmp.strG = strG[i][j];
+
+                if (strG[i][j].endsWith("P")) {
+                    tmp.strG = strG[i][j].replace("P", "");
+                    if (month == 1) {
+                        tmp.isToday = c.isToday(year - 1, 12, Integer.valueOf(tmp.strG));
+                    } else {
+                        tmp.isToday = c.isToday(year, month - 1, Integer.valueOf(tmp.strG));
+                    }
+                } else if (strG[i][j].endsWith("N")) {
+                    tmp.strG = strG[i][j].replace("N", "");
+                    if (month == 12) {
+                        tmp.isToday = c.isToday(year + 1, month, Integer.valueOf(tmp.strG));
+                    } else {
+                        tmp.isToday = c.isToday(year, month + 1, Integer.valueOf(tmp.strG));
+                    }
+                } else {
+                    tmp.strG = strG[i][j];
+                    tmp.isToday = c.isToday(year, month, Integer.valueOf(tmp.strG));
+                }
+
                 if (c instanceof DPCNCalendar) {
                     tmp.strF = strF[i][j].replace("F", "");
                 } else {
                     tmp.strF = strF[i][j];
                 }
+
+                if (!TextUtils.isEmpty(strG[i][j]) && (strG[i][j].endsWith("P") || strG[i][j].endsWith("N")))
+                    tmp.isDateOfOtherMonths = true;
                 if (!TextUtils.isEmpty(tmp.strG) && strHoliday.contains(tmp.strG))
                     tmp.isHoliday = true;
-                if (!TextUtils.isEmpty(tmp.strG)) tmp.isToday =
-                        c.isToday(year, month, Integer.valueOf(tmp.strG));
                 if (strWeekend.contains(tmp.strG)) tmp.isWeekend = true;
                 if (c instanceof DPCNCalendar) {
                     if (!TextUtils.isEmpty(tmp.strG)) tmp.isSolarTerms =

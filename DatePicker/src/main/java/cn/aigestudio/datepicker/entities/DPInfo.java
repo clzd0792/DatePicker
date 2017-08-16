@@ -10,6 +10,7 @@ package cn.aigestudio.datepicker.entities;
  */
 public class DPInfo {
     public String strG, strF;
+    public boolean isDateOfOtherMonths;
     public boolean isHoliday;
     public boolean isToday, isWeekend;
     public boolean isSolarTerms, isFestival, isDeferred;

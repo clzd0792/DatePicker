@@ -80,29 +80,78 @@ public abstract class DPCalendar {
         c.set(year, month - 1, 1);
 
         int daysInMonth = 0;
-        if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 ||
-                month == 12) {
+        int daysInprevMonth = 0;
+
+        if (month == 1 || month == 8) {
             daysInMonth = 31;
-        } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-            daysInMonth = 30;
+            daysInprevMonth = 31;
         } else if (month == 2) {
+            daysInprevMonth = 31;
             if (isLeapYear(year)) {
                 daysInMonth = 29;
             } else {
                 daysInMonth = 28;
             }
+        } else if (month == 3) {
+            daysInMonth = 31;
+            if (isLeapYear(year)) {
+                daysInprevMonth = 29;
+            } else {
+                daysInprevMonth = 28;
+            }
+        } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+            daysInMonth = 30;
+            daysInprevMonth = 31;
+        } else if (month == 5 || month == 7 || month == 10 || month == 12) {
+            daysInMonth = 31;
+            daysInprevMonth = 30;
         }
+
+
+
+        int firstDayIndex = 0;
+        int lastDayIndexi = 0;
+        int lastDayIndexj = 0;
+
         int dayOfWeek = c.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY;
         int day = 1;
+
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
                 tmp[i][j] = "";
                 if (i == 0 && j >= dayOfWeek) {
+                    if (j == dayOfWeek) {
+                        firstDayIndex = j;
+                    }
                     tmp[i][j] = "" + day;
                     day++;
                 } else if (i > 0 && day <= daysInMonth) {
+
+                    if (day == daysInMonth) {
+                        lastDayIndexi = i;
+                        lastDayIndexj = j;
+                    }
                     tmp[i][j] = "" + day;
                     day++;
+                }
+            }
+        }
+
+        for (int j = 0; j < firstDayIndex; j++) {
+
+            tmp[0][j] = "" + (daysInprevMonth - firstDayIndex + 1 + j) + "P";
+
+        }
+
+        int dayOfNextMonth = 1;
+
+        for (int i = 0; i < 6; i++) {
+
+            for (int j = 0; j < 7; j++) {
+
+                if ((i == lastDayIndexi && j > lastDayIndexj) || i>lastDayIndexi){
+                    tmp[i][j] = "" + dayOfNextMonth + "N";
+                    dayOfNextMonth ++;
                 }
             }
         }

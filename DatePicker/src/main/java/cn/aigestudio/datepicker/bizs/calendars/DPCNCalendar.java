@@ -1,6 +1,7 @@
 package cn.aigestudio.datepicker.bizs.calendars;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -124,9 +125,30 @@ public class DPCNCalendar extends DPCalendar {
             for (int j = 0; j < tmp[0].length; j++) {
                 tmp[i][j] = "";
                 if (!TextUtils.isEmpty(gregorianMonth[i][j])) {
-                    g.y = year;
-                    g.m = month;
-                    g.d = Integer.valueOf(gregorianMonth[i][j]);
+                    if (gregorianMonth[i][j].endsWith("P")) {
+                        if (month == 1) {
+                            g.y = year - 1;
+                            g.m = 12;
+                        }else {
+                            g.y = year;
+                            g.m = month - 1;
+                        }
+                        g.d = Integer.valueOf(gregorianMonth[i][j].replace("P", ""));
+                    } else if (gregorianMonth[i][j].endsWith("N")) {
+                        if (month == 12) {
+                            g.y = year + 1;
+                            g.m = 1;
+                        } else {
+                            g.y = year;
+                            g.m = month + 1;
+                        }
+                        g.d = Integer.valueOf(gregorianMonth[i][j].replace("N", ""));
+                    } else {
+                        g.y = year;
+                        g.m = month;
+                        g.d = Integer.valueOf(gregorianMonth[i][j]);
+                    }
+
                     L l = null;
                     String result = "";
                     if (year >= 1900 && year <= 2100) {
@@ -136,7 +158,7 @@ public class DPCNCalendar extends DPCalendar {
                     if (TextUtils.isEmpty(result)) {
                         result = getFestivalG(g.m, g.d);
                         if (TextUtils.isEmpty(result)) {
-                            result = getSolarTerm(year, month, g.d);
+                            result = getSolarTerm(g.y, g.m, g.d);
                             if (null != l && TextUtils.isEmpty(result)) {
                                 char[] c = String.valueOf(l.d).toCharArray();
                                 tmp[i][j] = lNumToStr(c);

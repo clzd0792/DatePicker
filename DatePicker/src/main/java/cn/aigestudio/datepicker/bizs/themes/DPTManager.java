@@ -93,6 +93,11 @@ public final class DPTManager {
     }
 
     /**
+     * @see DPTheme#colorDateOfOtherMonths()
+     */
+    public int colorDateOfOtherMonths() { return theme.colorDateOfOtherMonths(); }
+
+    /**
      * @see DPTheme#colorWeekend()
      */
     public int colorWeekend() {

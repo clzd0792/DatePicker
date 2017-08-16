@@ -84,6 +84,7 @@ public class MonthView extends View {
     private float offsetYFestival1, offsetYFestival2;
 
     private boolean isNewEvent,
+            isDateOfOtherMonthsDisplay = false,
             isFestivalDisplay = true,
             isHolidayDisplay = true,
             isTodayDisplay = true,
@@ -308,6 +309,16 @@ public class MonthView extends View {
         canvas.restore();
     }
 
+    @Override
+    public boolean onFilterTouchEventForSecurity(MotionEvent event) {
+        return super.onFilterTouchEventForSecurity(event);
+    }
+
+    @Override
+    public void setOnTouchListener(OnTouchListener l) {
+        super.setOnTouchListener(l);
+    }
+
     private void draw(Canvas canvas, int x, int y, int year, int month) {
         canvas.save();
         canvas.translate(x, y);
@@ -329,6 +340,9 @@ public class MonthView extends View {
         }
         for (int i = 0; i < result.length; i++) {
             for (int j = 0; j < result[i].length; j++) {
+                if (!isDateOfOtherMonthsDisplay && info[i][j].isDateOfOtherMonths) {
+                    continue;
+                }
                 draw(canvas, tmp[i][j].getBounds(), info[i][j]);
             }
         }
@@ -337,8 +351,8 @@ public class MonthView extends View {
 
     private void draw(Canvas canvas, Rect rect, DPInfo info) {
         drawBG(canvas, rect, info);
-        drawGregorian(canvas, rect, info.strG, info.isWeekend);
-        if (isFestivalDisplay) drawFestival(canvas, rect, info.strF, info.isFestival);
+        drawGregorian(canvas, rect, info.strG,info.isDateOfOtherMonths, info.isWeekend);
+        if (isFestivalDisplay) drawFestival(canvas, rect, info.strF, info.isFestival, info.isDateOfOtherMonths);
         drawDecor(canvas, rect, info);
     }
 
@@ -371,9 +385,11 @@ public class MonthView extends View {
             canvas.drawCircle(rect.centerX(), rect.centerY(), circleRadius / 2F, mPaint);
     }
 
-    private void drawGregorian(Canvas canvas, Rect rect, String str, boolean isWeekend) {
+    private void drawGregorian(Canvas canvas, Rect rect, String str,boolean isDateOfOtherMonths, boolean isWeekend) {
         mPaint.setTextSize(sizeTextGregorian);
-        if (isWeekend) {
+        if (isDateOfOtherMonths) {
+            mPaint.setColor(mTManager.colorDateOfOtherMonths());
+        } else if (isWeekend) {
             mPaint.setColor(mTManager.colorWeekend());
         } else {
             mPaint.setColor(mTManager.colorG());
@@ -384,9 +400,11 @@ public class MonthView extends View {
         canvas.drawText(str, rect.centerX(), y, mPaint);
     }
 
-    private void drawFestival(Canvas canvas, Rect rect, String str, boolean isFestival) {
+    private void drawFestival(Canvas canvas, Rect rect, String str, boolean isFestival, boolean isDateOfOtherMonths) {
         mPaint.setTextSize(sizeTextFestival);
-        if (isFestival) {
+        if (isDateOfOtherMonths) {
+            mPaint.setColor(mTManager.colorDateOfOtherMonths());
+        } else if (isFestival) {
             mPaint.setColor(mTManager.colorF());
         } else {
             mPaint.setColor(mTManager.colorL());
@@ -506,6 +524,10 @@ public class MonthView extends View {
         invalidate();
     }
 
+    void setDateOfOtherMonthsDisplay(boolean isDateOfOtherMonthsDisplay) {
+        this.isDateOfOtherMonthsDisplay = isDateOfOtherMonthsDisplay;
+    }
+
     void setFestivalDisplay(boolean isFestivalDisplay) {
         this.isFestivalDisplay = isFestivalDisplay;
     }
@@ -584,6 +606,9 @@ public class MonthView extends View {
                     continue;
                 }
                 if (region.contains(x, y)) {
+                    if (!isDateOfOtherMonthsDisplay && mCManager.obtainDPInfo(centerYear, centerMonth)[i][j].isDateOfOtherMonths) {
+                        return;
+                    }
                     List<Region> regions = REGION_SELECTED.get(indexYear + ":" + indexMonth);
                     if (mDPMode == DPMode.SINGLE) {
                         cirApr.clear();

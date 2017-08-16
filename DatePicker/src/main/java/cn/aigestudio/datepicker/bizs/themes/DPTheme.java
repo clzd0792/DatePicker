@@ -90,4 +90,13 @@ public abstract class DPTheme {
      * @return 16进制颜色值 hex color
      */
     public abstract int colorHoliday();
+
+    /**
+     * 其他月份的日期文本颜色
+     *
+     * Color of Date of other months text
+     *
+     * @return 16进制颜色值 hex color
+     */
+    public abstract int colorDateOfOtherMonths();
 }

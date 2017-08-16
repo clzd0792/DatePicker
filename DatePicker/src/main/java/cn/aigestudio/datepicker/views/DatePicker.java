@@ -187,6 +187,10 @@ public class DatePicker extends LinearLayout {
         monthView.setDPMode(mode);
     }
 
+    public void setDateOfOtherMonthsDisplay(boolean isDateOfOtherMonthsDisplay) {
+        monthView.setDateOfOtherMonthsDisplay(isDateOfOtherMonthsDisplay);
+    }
+
     public void setFestivalDisplay(boolean isFestivalDisplay) {
         monthView.setFestivalDisplay(isFestivalDisplay);
     }

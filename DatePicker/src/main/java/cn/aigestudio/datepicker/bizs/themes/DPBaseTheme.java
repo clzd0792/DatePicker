@@ -52,4 +52,7 @@ public class DPBaseTheme extends DPTheme {
     public int colorHoliday() {
         return 0x80FED6D6;
     }
+
+    @Override
+    public int colorDateOfOtherMonths() { return 0xFFBDBDBD;}
 }
