@@ -111,9 +111,8 @@ public class MainActivity extends Activity {
 
         DatePicker picker = (DatePicker) findViewById(R.id.main_dp);
         picker.setDate(2015, 10);
-        picker.setDateOfOtherMonthsDisplay(true);
         picker.setFestivalDisplay(false);
-        picker.setTodayDisplay(true);
+        picker.setTodayDisplay(false);
         picker.setHolidayDisplay(false);
         picker.setDeferredDisplay(false);
         picker.setMode(DPMode.NONE);
@@ -178,7 +177,6 @@ public class MainActivity extends Activity {
                 DatePicker picker = new DatePicker(MainActivity.this);
                 picker.setDate(2015, 10);
                 picker.setMode(DPMode.SINGLE);
-                picker.setDateOfOtherMonthsDisplay(true);
                 picker.setOnDatePickedListener(new DatePicker.OnDatePickedListener() {
                     @Override
                     public void onDatePicked(String date) {
